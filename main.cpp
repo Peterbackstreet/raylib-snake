@@ -87,8 +87,8 @@ class Snake {
 
     void move(Vector2 foodPos,Food& food) {
       Vector2 head = Vector2Add(body.front(),direction);
-
-      if (grid[head.x][head.y] == 1) gameover = 1;
+      
+      if (head.x<0 || head.x>=grid_count || head.y<0 || head.x >=grid_count || grid[head.x][head.y] == 1) gameover = 1;
 
       grid[head.x][head.y] = 1;
       body.push_front(head);
@@ -161,7 +161,7 @@ int main() {
     if(gameover) break;
     EndDrawing();
   }
-  cout << "gameover\n";
+  cout << "gamejoever\n";
 
   CloseWindow();
   return 0;
