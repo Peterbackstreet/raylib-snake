@@ -12,6 +12,7 @@ Color background = {255, 165, 158, 255};
 
 int grid_count = 25;
 int grid_size = 30;
+int offset = 120;
 vector<vector<bool>> grid(grid_count, vector<bool> (grid_count, 0));
 
 double currTime = 0;
@@ -53,7 +54,7 @@ class Food {
     }
 
     void draw() {
-      DrawTexture(texture, pos.x * grid_size, pos.y * grid_size, WHITE);
+      DrawTexture(texture, pos.x * grid_size + offset/2, pos.y * grid_size + offset/2, WHITE);
     }
 
     Vector2 getRandomPosition() {
@@ -80,15 +81,18 @@ class Snake {
 
     void draw() {
       for(Vector2 pos : body) {
-        Rectangle part = Rectangle{pos.x * grid_size, pos.y * grid_size, (float)grid_size, (float)grid_size};
+        Rectangle part = Rectangle{pos.x * grid_size + offset/2, pos.y * grid_size + offset/2, (float)grid_size, (float)grid_size};
         DrawRectangleRounded(part, 0.6, 1, color);
       }
     }
 
     void move(Vector2 foodPos,Food& food) {
-      Vector2 head = Vector2Add(body.front(),direction);
-      
-      if (head.x<0 || head.x>=grid_count || head.y<0 || head.x >=grid_count || grid[head.x][head.y] == 1) gameover = 1;
+      Vector2 head = Vector2Add(body.front(), direction);
+
+      if (head.x <0 || head.x>=grid_count || head.y<0 || head.x>=grid_count || grid[head.x][head.y] == 1) {
+        gameover = 1;
+        return;
+      }
 
       grid[head.x][head.y] = 1;
       body.push_front(head);
@@ -147,7 +151,8 @@ class Game {
 };
 
 int main() {
-  InitWindow(grid_count*grid_size, grid_count*grid_size, "Snake"); //initialize the window's size by grid_size*grid_count
+  int planeSize = grid_count * grid_size;
+  InitWindow(offset + planeSize,offset + planeSize, "Snake"); //initialize the window's size by grid_size*grid_count
   SetTargetFPS(60);
 
   Game game;
@@ -157,6 +162,8 @@ int main() {
     game.update();
     game.draw();
     ClearBackground(background);
+    DrawRectangleLinesEx(Rectangle{(float)offset/2,(float)offset/2,(float)planeSize,(float)planeSize},  5, BLACK);
+
 
     if(gameover) break;
     EndDrawing();
